@@ -1,12 +1,12 @@
 const { ethers, network } = require("hardhat")
 const verify = require("../utils/verify")
 
-const feeInWeiPerBill = ethers.utils.parseEther("0.01")
-
 module.exports = async ({ deployments, getNamedAccounts }) => {
     const { deploy, log } = deployments
     const { deployer } = await getNamedAccounts()
     const chainId = network.config.chainId
+
+    const feeInWeiPerBill = ethers.utils.parseEther("0.0001", "ether")
 
     let DaiAddress, waitConfirmations
     if (chainId == 31337) {
