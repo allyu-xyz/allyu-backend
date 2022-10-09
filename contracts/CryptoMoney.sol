@@ -243,6 +243,6 @@ contract CryptoMoney is Ownable {
         view
         returns (Bill memory)
     {
-        return s_bills[billId];
+        return s_bills[billId - 1];
     }
 }
