@@ -186,7 +186,7 @@ contract CryptoMoney is Ownable {
         uint256 redeemValue = bill.value;
         s_bills[billId].value = 0;
         s_bills[billId].isRedeemed = true;
-        s_daiContract.transfer(msg.sender, redeemValue);
+        s_daiContract.transfer(redeemAddress, redeemValue);
         emit BillRedeemed(billId, redeemAddress, redeemValue);
     }
 
