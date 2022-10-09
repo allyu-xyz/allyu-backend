@@ -2,8 +2,8 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "/Users/jasonchaskin/ETH_BOGOTA/allyu-backend/contracts/CryptoMoney.sol": {
-      "lastModificationDate": 1665297418612,
-      "contentHash": "f7d304a13d358ed5a12da968484b883c",
+      "lastModificationDate": 1665314564924,
+      "contentHash": "733e5cc337fb201780d700bdfd32c1b3",
       "sourceName": "contracts/CryptoMoney.sol",
       "solcConfig": {
         "version": "0.8.13",

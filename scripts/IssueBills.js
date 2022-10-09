@@ -4,8 +4,8 @@ const CODE_HASHES = [0xe59a0f0df1c0a4ab0624a10fea5c1fb7495dec2bc3b288de26330b886
 
 async function main() {
     const {deployer} = await getNamedAccounts()
-    const cryptoMoney = await ethers.getContractAt("CryptoMoney", "0xa3E74A6fa8195D17365140924De9A733f2A201A8", deployer);
-    const tx = await cryptoMoney.requestBills("2", CODE_HASHES)
+    const cryptoMoney = await ethers.getContractAt("CryptoMoney", "0x1F95BA41467679d2ef30F790Ceda7871DcaC8e0F", deployer);
+    const tx = await cryptoMoney.redeem("2", "ice cream", "phone", "0xeFdCAA2fa2D3Bb4Bf3b343253199B0331A2E1A14")
 }
 
 main()

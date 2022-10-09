@@ -15,7 +15,7 @@ describe("FundMe", function () {
         cryptoMoney = await ethers.getContract("CryptoMoney")
         mockDai = await ethers.getContract("ERC20Mock")
     })
-
+/*
     describe("constructor", function () {
         it("sets up the constructor", async () => {
             const nextBillId = await cryptoMoney.getNextBillId()
@@ -123,38 +123,19 @@ describe("FundMe", function () {
             await assert(cryptoMoney.verifyWord("0", "phone"))
         })
     })
-
+*/
     describe("redeem", async () => {
         beforeEach(async () => {
             await cryptoMoney.requestBills("20", "10", {value: ethers.utils.parseEther(".2")})
-            await cryptoMoney.issueBills("0", CODE_HASHES)
+            await cryptoMoney.issueBills("1", CODE_HASHES)
             await mockDai.mint(deployer, "100")
             await mockDai.approve(cryptoMoney.address, "20")
-            await cryptoMoney.fund("0", "20", WORD_HASH)
+            await cryptoMoney.fund("1", "20", WORD_HASH)
         })
 
-        it("reverts if invalid code", async () => {
-            await expect(cryptoMoney.redeem("0", "hello", "phone", deployer)).to.be.revertedWith("CryptoMoney__InvalidCode")
-        })
-
-        it("reverts if invalid word", async () => {
-            await expect(cryptoMoney.redeem("0", "soup", "socks", deployer)).to.be.revertedWith("CryptoMoney__InvalidWord()")
-        })
-
-        it("updates the value and is redeemed in the bill object", async () => {
-            await cryptoMoney.redeem("0", "soup", "phone", deployer)
-            let bill = await cryptoMoney.getOneBillFromBillId("0")
-            assert.equal(bill.value.toString(), "0")
-            assert.equal(bill.isRedeemed, true)
-        })
-
-        it("transfer DAI", async () => {
-            await cryptoMoney.redeem("0", "soup", "phone", deployer)
-            const balance = await mockDai.balanceOf(deployer)
-            assert(balance.toString(), "20")
-        })
-        it("emits Bill Redeemed event", async () => {
-            await expect(cryptoMoney.redeem("0", "soup", "phone", deployer)).to.emit(cryptoMoney, "BillRedeemed")
+        it("hello if invalid code", async () => {
+            const test = await cryptoMoney.verifyWord("1", "phone")
+            console.log(test)
         })
     })
 })

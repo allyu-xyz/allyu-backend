@@ -147,19 +147,19 @@ contract CryptoMoney is Ownable {
         uint256 amount,
         bytes calldata wordHash
     ) external {
-        Bill memory bill = s_bills[billId];
+        Bill memory bill = s_bills[billId - 1];
         IERC20 daiContract = s_daiContract;
-        if (daiContract.allowance(msg.sender, address(this)) != bill.value) {
+        if (daiContract.allowance(msg.sender, address(this)) < bill.value) {
             revert CryptoMoney__NotApproved();
         }
-        s_bills[billId].wordHash = bytes32(wordHash);
-        s_bills[billId].isFunded = true;
+        s_bills[billId - 1].wordHash = bytes32(wordHash);
+        s_bills[billId - 1].isFunded = true;
         daiContract.transferFrom(
             msg.sender,
             address(this),
             bill.value
         );
-        emit BillFunded(billId, msg.sender, amount);
+        emit BillFunded(billId - 1, msg.sender, amount);
     }
 
     // @notice The redeemer reveals the secret code which has been hidden on the paper bill and inputs it, the bill id, and the secret word which was pyhsically
@@ -176,22 +176,32 @@ contract CryptoMoney is Ownable {
         string memory word,
         address redeemAddress
     ) external {
-        Bill memory bill = s_bills[billId];
-        if (keccak256((abi.encodePacked(bill.codeHash))) != keccak256(abi.encodePacked(keccak256((abi.encodePacked(code)))))) {
+        Bill memory bill = s_bills[billId - 1];
+        bytes32 testCodeHash = keccak256((abi.encodePacked(bill.codeHash)));
+        bytes32 testCode = keccak256(abi.encodePacked(keccak256((abi.encodePacked(code)))));
+        if (testCodeHash != testCode) {
                 revert CryptoMoney__InvalidCode();
         }
-        if (keccak256((abi.encodePacked(bill.wordHash))) != keccak256(abi.encodePacked(keccak256((abi.encodePacked(word)))))) {
+        bytes32 testWordHash = keccak256((abi.encodePacked(bill.wordHash)));
+        bytes32 testWord = keccak256(abi.encodePacked(keccak256((abi.encodePacked(word)))));
+        if (testWordHash != testWord) {
                 revert CryptoMoney__InvalidWord();
         }
         uint256 redeemValue = bill.value;
-        s_bills[billId].value = 0;
-        s_bills[billId].isRedeemed = true;
+        s_bills[billId - 1].value = 0;
+        s_bills[billId - 1].isRedeemed = true;
         s_daiContract.transfer(redeemAddress, redeemValue);
-        emit BillRedeemed(billId, redeemAddress, redeemValue);
+        emit BillRedeemed((billId - 1), redeemAddress, redeemValue);
     }
 
-    function verifyWord(uint256 billId, string memory word) external view returns (bool) {       
-        return (keccak256((abi.encodePacked(s_bills[billId].wordHash))) == keccak256(abi.encodePacked(keccak256((abi.encodePacked(word))))));
+    function verifyWord(uint256 billId, string memory word) external view returns (bool) {    
+        bytes32 testWordHash = keccak256((abi.encodePacked(s_bills[billId - 1].wordHash)));
+        bytes32 testWord = keccak256(abi.encodePacked(keccak256((abi.encodePacked(word)))));
+        if (testWordHash == testWord) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     function updateFee(uint256 updatedFee) external onlyOwner {
